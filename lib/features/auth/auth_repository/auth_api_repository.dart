@@ -30,7 +30,6 @@ class AuthRepository {
       );
 
       final loginResponse = HttpResult.fromResponse(res);
-
       if (loginResponse.statusCode != HttpStatus.ok) {
           return AuthResult.failure(loginResponse.statusCode, loginResponse.message);
       }
@@ -42,7 +41,7 @@ class AuthRepository {
   }
 
   Future<bool> logout(String accessToken) async {
-    
+    // return true;
     try {
       final http.Response res = await _apiService.post('api/logout');
       final logoutResponse = HttpResult.fromResponse(res);

@@ -24,8 +24,15 @@ class ApiService {
 
   // Method to set or update access token
   Future<void> setAccessToken(String token) async {
+    clearAccessToken();
     _accessToken = token;
     await storage.write(key: 'access_token', value: token); // Save to secure storage
+  }
+
+  // Method to set or update access token
+  Future<void> clearAccessToken() async {
+    _accessToken = null;
+    await storage.delete(key: 'access_token');
   }
 
   // Load access token from storage if not already set
@@ -63,13 +70,18 @@ class ApiService {
   Future<http.Response> post(String path, {dynamic body, Map<String, String>? headers}) async {
     final uri = Uri.http(baseUrl, path);
     final finalHeaders =  await _getHeaders(headers);
+    print("====================");
+    print("POST: $uri");
+    print("HEADERS:");
+    print(finalHeaders);
+    print("BODY:");
+    print(body);
+    print("====================");
     final response = await _httpClient.post(
       uri,
       headers: finalHeaders,
       body: body != null ? jsonEncode(body) : null, // Handle null body
     );
-    print(finalHeaders);
-    print(response.body);
 
     return _handleResponse(response);
   }

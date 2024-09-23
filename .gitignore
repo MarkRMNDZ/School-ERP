@@ -889,3 +889,5 @@ DerivedData/
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
 
 *.env
+/.flutter-plugins-dependencies
+/devtools_options.yaml
