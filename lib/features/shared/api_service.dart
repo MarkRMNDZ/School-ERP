@@ -21,21 +21,21 @@ class ApiService {
 
   String get clientSecret => dotenv.get('CLIENT_SECRET');
   String get clientId => dotenv.get('CLIENT_ID');
+  //
+  // // Method to set or update access token
+  // Future<void> setAccessToken(String token) async {
+  //   clearAccessToken();
+  //   _accessToken = token;
+  //   await storage.write(key: 'access_token', value: token); // Save to secure storage
+  // }
 
-  // Method to set or update access token
-  Future<void> setAccessToken(String token) async {
-    clearAccessToken();
-    _accessToken = token;
-    await storage.write(key: 'access_token', value: token); // Save to secure storage
-  }
-
-  // Method to set or update access token
-  Future<void> clearAccessToken() async {
-    _accessToken = null;
-    await storage.delete(key: 'access_token');
-  }
-
-  // Load access token from storage if not already set
+  // // Method to set or update access token
+  // Future<void> clearAccessToken() async {
+  //   _accessToken = null;
+  //   await storage.delete(key: 'access_token');
+  // }
+  //
+  // // Load access token from storage if not already set
   Future<void> _loadAccessToken() async {
     _accessToken ??= await storage.read(key: 'access_token');
   }
@@ -136,7 +136,6 @@ class ApiService {
     if (res.statusCode == 200) {
       final parsed = jsonDecode(res.body);
       final String accessToken = parsed['access_token'];
-      await setAccessToken(accessToken); // Save token
       return accessToken;
     } else {
       throw Exception('Failed to get client token: ${res.statusCode}');
