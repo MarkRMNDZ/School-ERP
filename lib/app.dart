@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:school_erp/features/auth/auth.dart';
+import 'package:school_erp/features/shared/api_service.dart';
 import 'package:school_erp/pages/home/home_page.dart';
 import 'package:school_erp/pages/login/login_page.dart';
 
@@ -12,7 +13,7 @@ class App extends StatelessWidget {
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider<AuthRepository>(
-          create: (context) => AuthRepository(),
+          create: (context) => AuthRepository(apiService: ApiService()),
         ),
       ],
       child: BlocProvider<AuthBloc>(
