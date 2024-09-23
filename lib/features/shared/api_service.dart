@@ -37,7 +37,7 @@ class ApiService {
   //
   // // Load access token from storage if not already set
   Future<void> _loadAccessToken() async {
-    _accessToken ??= await storage.read(key: 'access_token');
+    _accessToken = await storage.read(key: 'access_token');
   }
 
   // Add the Authorization header automatically if an access token is present
@@ -46,8 +46,6 @@ class ApiService {
       "Content-Type": "application/json",
       "Accept": "application/json",
     };
-
-    // Ensure the access token is loaded
     await _loadAccessToken().then((_) {
       if (_accessToken != null) {
         defaultHeaders["Authorization"] = "Bearer $_accessToken";
@@ -72,7 +70,7 @@ class ApiService {
     final finalHeaders =  await _getHeaders(headers);
     print("====================");
     print("POST: $uri");
-    // print("TOKEN: $accessToken");
+    print("TOKEN: $_accessToken");
     print("HEADERS:");
     print(finalHeaders);
     print("BODY:");
