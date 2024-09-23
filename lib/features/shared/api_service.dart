@@ -41,14 +41,14 @@ class ApiService {
   }
 
   // Add the Authorization header automatically if an access token is present
-  Map<String, String> _getHeaders([Map<String, String>? headers]) {
+  Future<Map<String, String>> _getHeaders([Map<String, String>? headers]) async {
     final defaultHeaders = {
       "Content-Type": "application/json",
       "Accept": "application/json",
     };
 
     // Ensure the access token is loaded
-    _loadAccessToken().then((_) {
+    await _loadAccessToken().then((_) {
       if (_accessToken != null) {
         defaultHeaders["Authorization"] = "Bearer $_accessToken";
       }
@@ -72,6 +72,7 @@ class ApiService {
     final finalHeaders =  await _getHeaders(headers);
     print("====================");
     print("POST: $uri");
+    // print("TOKEN: $accessToken");
     print("HEADERS:");
     print(finalHeaders);
     print("BODY:");
