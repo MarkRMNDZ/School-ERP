@@ -49,6 +49,10 @@ dependencies:
 
   intl: any
   dotted_line: ^3.2.2
+  powersync: ^1.8.2
+  path_provider: ^2.1.4
+  path: ^1.9.0
+  logging: ^1.2.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -84,7 +88,6 @@ flutter:
     - assets/events.json
     - .env
     - assets/questions.json
-    - assets/teachers.json
   fonts:
     - family: SourceSans
       fonts:

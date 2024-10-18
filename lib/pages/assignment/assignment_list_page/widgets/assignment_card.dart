@@ -1,25 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:school_erp/pages/assignment/assignment_check_page/assignment_check_page.dart';
+import 'package:intl/intl.dart';
+import 'package:school_erp/models/assessment.dart';
+import 'package:school_erp/pages/EnterExitRoute.dart';
 import 'package:school_erp/pages/assignment/assignment_preview/assignment_preview_page.dart';
+import 'package:school_erp/pages/common_widgets/default_button.dart';
+import 'package:school_erp/utils/extensions/string_extension.dart';
 import 'package:school_erp/theme/colors.dart';
 
 class AssignmentCard extends StatelessWidget {
-  final String subject;
-  final String title;
-  final String assignDate;
-  final String lastSubmissionDate;
-  final String status;
-  final Color statusColor;
+  final Assessment assessment;
 
-  const AssignmentCard({
-    super.key,
-    required this.subject,
-    required this.title,
-    required this.assignDate,
-    required this.lastSubmissionDate,
-    required this.status,
-    required this.statusColor,
-  });
+  const AssignmentCard(this.assessment, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -27,23 +18,9 @@ class AssignmentCard extends StatelessWidget {
       onTap: () {
         Navigator.push(
           context,
-          PageRouteBuilder(
-            pageBuilder: (context, animation, secondaryAnimation) =>
-                const AssignmentCheckPage(),
-            transitionsBuilder:
-                (context, animation, secondaryAnimation, child) {
-              const begin = 0.0;
-              const end = 1.0;
-              const curve = Curves.easeInOut;
-              var fadeTween =
-                  Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-              var fadeAnimation = animation.drive(fadeTween);
-
-              return FadeTransition(
-                opacity: fadeAnimation,
-                child: child,
-              );
-            },
+          EnterExitRoute(
+            exitPage: context.widget,
+            enterPage: const AssignmentPreviewPage(),
           ),
         );
       },
@@ -67,7 +44,7 @@ class AssignmentCard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(5.0),
                     ),
                     child: Text(
-                      subject,
+                      assessment.subject.capitalize(),
                       style: const TextStyle(
                         color: AppColors.primaryColor,
                         fontWeight: FontWeight.bold,
@@ -76,7 +53,7 @@ class AssignmentCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 8.0),
                   Text(
-                    title,
+                    assessment.title,
                     style: const TextStyle(
                       fontSize: 16.0,
                       fontWeight: FontWeight.bold,
@@ -84,37 +61,27 @@ class AssignmentCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 4.0),
                   Text(
-                    'Assign Date: $assignDate',
+                    'Start Date: ${DateFormat('yyyy-MM-dd HH:mm').format(assessment.startTime)}',
                     style: const TextStyle(
                       color: Colors.grey,
                       fontSize: 14.0,
                     ),
                   ),
                   Text(
-                    'Last Submission Date: $lastSubmissionDate',
+                    'Submission Date: ${DateFormat('yyyy-MM-dd HH:mm').format(assessment.deadLine)}',
                     style: const TextStyle(
                       color: Colors.grey,
                       fontSize: 14.0,
                     ),
                   ),
                   const SizedBox(height: 8.0),
-                  ElevatedButton(
-                    onPressed: () {
-                      // Handle status button action here
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: statusColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20.0),
-                      ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                    child: DefaultButton(
+                      text: assessment.status.displayName,
+                      onPressed: () => (),
                     ),
-                    child: Text(
-                      status,
-                      style: const TextStyle(
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
+                  )
                 ],
               ),
             ),
@@ -124,26 +91,11 @@ class AssignmentCard extends StatelessWidget {
               child: IconButton(
                 icon: const Icon(Icons.edit, color: Colors.grey),
                 onPressed: () {
-                  // Ensure AssignmentPreviewPage is defined correctly
                   Navigator.push(
                     context,
-                    PageRouteBuilder(
-                      pageBuilder: (context, animation, secondaryAnimation) =>
-                          const AssignmentPreviewPage(), // Ensure correct constructor
-                      transitionsBuilder:
-                          (context, animation, secondaryAnimation, child) {
-                        const begin = 0.0;
-                        const end = 1.0;
-                        const curve = Curves.easeInOut;
-                        var fadeTween = Tween(begin: begin, end: end)
-                            .chain(CurveTween(curve: curve));
-                        var fadeAnimation = animation.drive(fadeTween);
-
-                        return FadeTransition(
-                          opacity: fadeAnimation,
-                          child: child,
-                        );
-                      },
+                    EnterExitRoute(
+                      exitPage: context.widget,
+                      enterPage: const AssignmentPreviewPage(),
                     ),
                   );
                 },

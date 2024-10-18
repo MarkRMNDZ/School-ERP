@@ -47,13 +47,13 @@ class AuthService {
   }
 
   Future<bool> isLoggedIn() async {
-    final token = await getToken();
-    return token != null;
+    final user = await storage.read(key: 'user');
+    return user != null;
   }
 
-  Future<AuthenticatedUser> getUser() async {
+  Future<AuthenticatedUser?> getUser() async {
     if (await isLoggedIn() == false) {
-      throw UserNotLoggedInException();
+      return null;
     }
     final userData = await storage.read(key: 'user');
     return AuthenticatedUser.fromJson(jsonDecode(userData!));

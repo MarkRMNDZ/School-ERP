@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import './app_bar_widgets/sync_status.dart';
 
 class CustomAppBar extends StatelessWidget {
   final String title;
@@ -31,16 +32,15 @@ class CustomAppBar extends StatelessWidget {
                   onPressed: onBackPressed ?? () => Navigator.pop(context),
                 ),
               ),
-              const SizedBox(width: 8.0), 
-              Text(
-                title,
-                style: titleStyle ?? const TextStyle(color: Colors.white, fontSize: 24.0),
+              Expanded(
+                child: Text(
+                  title,
+                  style: titleStyle ??
+                      const TextStyle(color: Colors.white, fontSize: 24.0),
+                ),
               ),
-              const Spacer(), 
-              Align(
-                alignment: Alignment.centerRight,
-                child: trailingWidget ?? SizedBox(), 
-              ),
+              const AppBarSyncStatus(),
+              Align(alignment: Alignment.centerRight, child: trailingWidget),
             ],
           ),
         ),

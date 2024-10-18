@@ -1,5 +1,3 @@
-import 'package:flutter/foundation.dart';
-
 import 'schemas/schemas.dart';
 import 'package:school_erp/features/shared/constants/http_status.dart';
 import 'package:http/http.dart' as http;
@@ -7,7 +5,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'dart:convert';
 
 // TODO: handling access token expiries and refresh token
-
+// TODO: update and use ApiClient
 class AuthRepository {
   AuthRepository({http.Client? httpClient})
       : _httpClient = httpClient ?? http.Client();
@@ -67,7 +65,6 @@ class AuthRepository {
           "client_secret": clientSecret
         }));
     final parsed = jsonDecode(res.body);
-    print(parsed);
     final String accessToken = parsed['access_token'];
     return accessToken;
   }
