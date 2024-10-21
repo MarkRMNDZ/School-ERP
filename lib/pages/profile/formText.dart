@@ -23,14 +23,12 @@ class FormText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left: 12.0, top: 8.0),
+      padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 5.0),
       child: Container(
         width: width,
         height: height,
         decoration: const BoxDecoration(
-          border: Border(
-            bottom: BorderSide(color: Colors.black, width: 0.5),
-          ),
+          border: Border(bottom: BorderSide(color: Colors.black, width: 1))
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,

@@ -185,7 +185,6 @@ class _ProfilePageState extends State<ProfilePage> {
 
     return SizedBox(
       width: double.infinity,
-      height: 650,
       child: ListView.builder(
         physics: const NeverScrollableScrollPhysics(),
         shrinkWrap: true,
@@ -204,14 +203,16 @@ class _ProfilePageState extends State<ProfilePage> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: data.map((item) {
-          return FormText(
-            width: item.width,
-            height: 75,
-            label: item.label,
-            value: item.value,
-            icon: item.icon != null
-                ? Icon(item.icon, size: 22.0, color: Colors.grey)
-                : null,
+          return Expanded(
+            child: FormText(
+              width: item.width,
+              height: 75,
+              label: item.label,
+              value: item.value,
+              icon: item.icon != null
+                  ? Icon(item.icon, size: 22.0, color: Colors.grey)
+                  : null,
+            ),
           );
         }).toList(),
       ),
