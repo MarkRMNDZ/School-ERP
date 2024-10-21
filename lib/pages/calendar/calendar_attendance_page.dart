@@ -54,43 +54,40 @@ class _CalendarAttendancePageState extends State<CalendarAttendancePage> {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultLayout(
-      title: 'Calendar',
-      content: [
-        CalendarWidget(
-          focusedDay: _focusedDay,
-          selectedDay: _selectedDay,
-          onDaySelected: _handleDaySelected,
-          onPageChanged: (focusedDay) {
-            _onMonthChanged(focusedDay);
-          },
+    return DefaultLayout(title: 'Calendar', content: [
+      CalendarWidget(
+        focusedDay: _focusedDay,
+        selectedDay: _selectedDay,
+        onDaySelected: _handleDaySelected,
+        onPageChanged: (focusedDay) {
+          _onMonthChanged(focusedDay);
+        },
+      ),
+      const SizedBox(height: 20.0),
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Padding(
+              padding: EdgeInsets.only(left: 0),
+              child: AttendanceTitle(),
+            ),
+            DropdownFilter(
+              selectedFilter: _selectedFilter,
+              onChanged: (newValue) {
+                setState(() {
+                  _selectedFilter = newValue!;
+                });
+              },
+            ),
+          ],
         ),
-        const SizedBox(height: 20.0),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Padding(
-                padding: EdgeInsets.only(left: 0),
-                child: AttendanceTitle(),
-              ),
-              DropdownFilter(
-                selectedFilter: _selectedFilter,
-                onChanged: (newValue) {
-                  setState(() {
-                    _selectedFilter = newValue!;
-                  });
-                },
-              ),
-            ],
-          ),
-        ),
-        AttendanceList(daysInMonth: _daysInMonth),
-      ]);
+      ),
+      AttendanceList(daysInMonth: _daysInMonth),
+    ]);
   }
 }
-
 
 class CalendarWidget extends StatelessWidget {
   final DateTime focusedDay;
@@ -109,23 +106,20 @@ class CalendarWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TableCalendar(
-      focusedDay: focusedDay,
-      firstDay: DateTime.utc(2020, 1, 1),
-      lastDay: DateTime.utc(2123, 12, 31),
-      selectedDayPredicate: (day) => isSameDay(selectedDay, day),
-      onDaySelected: (selectedDay, focusedDay) {
-        onDaySelected(selectedDay, focusedDay);
-      },
-      headerStyle: const HeaderStyle(
-        titleCentered: true
-      ),
-      onPageChanged: (focusedDay) {
-        onPageChanged(focusedDay);
-      },
-      availableCalendarFormats:  const {
-         CalendarFormat.month: 'Month',
-      }
-    );
+        focusedDay: focusedDay,
+        firstDay: DateTime.utc(2020, 1, 1),
+        lastDay: DateTime.utc(2123, 12, 31),
+        selectedDayPredicate: (day) => isSameDay(selectedDay, day),
+        onDaySelected: (selectedDay, focusedDay) {
+          onDaySelected(selectedDay, focusedDay);
+        },
+        headerStyle: const HeaderStyle(titleCentered: true),
+        onPageChanged: (focusedDay) {
+          onPageChanged(focusedDay);
+        },
+        availableCalendarFormats: const {
+          CalendarFormat.month: 'Month',
+        });
   }
 }
 
@@ -147,7 +141,8 @@ class DropdownFilter extends StatelessWidget {
         _buildDropdownItem('All', Colors.white, Colors.grey),
         _buildDropdownItem('Absent', AppColors.dangerColor, Colors.transparent),
         _buildDropdownItem('Late', AppColors.warningColor, Colors.transparent),
-        _buildDropdownItem('Holiday', AppColors.successColor, Colors.transparent),
+        _buildDropdownItem(
+            'Holiday', AppColors.successColor, Colors.transparent),
       ],
       onChanged: onChanged,
       underline: const SizedBox(),
@@ -226,9 +221,8 @@ class AttendanceList extends StatelessWidget {
                         ),
                       ],
                     ),
-                    const SizedBox(width: 20.0),
                     Padding(
-                      padding: const EdgeInsets.only(left: 30.0),
+                      padding: const EdgeInsets.only(left: 10.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
