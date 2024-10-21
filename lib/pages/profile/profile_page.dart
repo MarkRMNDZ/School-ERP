@@ -77,7 +77,6 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-
   Widget profileCard() {
     return Row(
       children: [
@@ -104,54 +103,44 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                     ),
                   ),
-                  const Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: SizedBox(
-                      width: 240,
+                 const Expanded(
+                    flex: 2,
+                    child: Padding(
+                      padding: EdgeInsets.only(top:15.0),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.only(top: 8.0),
-                                child: SizedBox(
-                                  width: 150,
-                                  child: Text(
-                                    'Akshay Syal',
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 20,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Icon(
-                                MyIcons.cameraAltOutlined,
-                                size: 23,
-                                color: Colors.grey,
-                              ),
-                            ],
+                          Text(
+                            'Akshay Syal',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                            ),
                           ),
-                          Padding(
-                            padding: EdgeInsets.only(top: 5.0),
-                            child: SizedBox(
-                              child: Text(
-                                'Class XI-B | Roll no: 04',
-                                style: TextStyle(
-                                  color: Colors.grey,
-                                  fontSize: 14,
-                                ),
-                              ),
+                          Text(
+                            'Class XI-B | Roll no: 04',
+                            style: TextStyle(
+                              color: Colors.grey,
+                              fontSize: 14,
                             ),
                           ),
                         ],
                       ),
                     ),
                   ),
+                  const Expanded(
+                    flex: 1,
+                    child:  Padding(
+                      padding: EdgeInsets.only(top:15.0),
+                      child: Icon(
+                        MyIcons.cameraAltOutlined,
+                        size: 23,
+                        color: Colors.grey,
+                      ),
+                    ),
+                  )
                 ],
               ),
             ),
