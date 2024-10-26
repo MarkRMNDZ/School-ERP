@@ -1,10 +1,13 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:school_erp/enums/assessment_type.dart';
+import 'package:school_erp/models/assessment.dart';
 import 'package:school_erp/pages/assignment/assignment_add/assignment_add_page/assignment_add_page.dart';
-import 'widgets/assignment_card.dart';
-import 'package:school_erp/pages/common_widgets/custom_app_bar.dart';
-import 'package:school_erp/theme/colors.dart';
+import 'package:school_erp/pages/common_widgets/app_bar_widgets/add_button.dart';
 import 'package:school_erp/pages/common_widgets/app_content.dart';
-import 'package:school_erp/pages/EnterExitRoute.dart';
+import 'package:school_erp/pages/common_widgets/custom_app_bar.dart';
+import 'widgets/assignment_card.dart';
+import 'package:school_erp/theme/colors.dart';
 
 class AssignmentListPage extends StatefulWidget {
   const AssignmentListPage({super.key});
@@ -14,6 +17,30 @@ class AssignmentListPage extends StatefulWidget {
 }
 
 class _AssignmentListPageState extends State<AssignmentListPage> {
+  List<Assessment?> _data = [];
+  late StreamSubscription? _subscription;
+
+  @override
+  void initState() {
+    super.initState();
+    final stream = Assessment.watchLists(AssessmentType.assignment);
+
+    _subscription = stream.listen((data) {
+      if (!context.mounted) {
+        return;
+      }
+      setState(() {
+        _data = data;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _subscription?.cancel();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,52 +49,17 @@ class _AssignmentListPageState extends State<AssignmentListPage> {
         children: [
           CustomAppBar(
             title: 'Assignment List',
-            trailingWidget: IconButton(
-              onPressed: () {
-               Navigator.push(
-                context,
-                EnterExitRoute(exitPage: context.widget, enterPage: const AssignmentAddPage())
-        );
-              },
-              icon: const Icon(
-                IconData(0xe74a, fontFamily: 'MaterialIcons'),
-                color: AppColors.successColor,
-                size: 28.0,
-              ),
-              iconSize: 28.0,
-            ),
+            trailingWidget: AppBarAddButton(
+                exitPage: widget, enterPage: const AssignmentAddPage()),
           ),
           AppContent(
             content: [
               Expanded(
                 child: ListView(
                   padding: const EdgeInsets.all(16.0),
-                  children: const [
-                    AssignmentCard(
-                      subject: 'Mathematics',
-                      title: 'Algebra 1',
-                      assignDate: 'Dec 19, 2024 9:00pm',
-                      lastSubmissionDate: 'Dec 19, 2024 11:59pm',
-                      status: 'TO BE COMPLETED',
-                      statusColor: AppColors.primaryColor,
-                    ),
-                    AssignmentCard(
-                      subject: 'Science',
-                      title: 'Structure of Atoms',
-                      assignDate: '10 Oct 20',
-                      lastSubmissionDate: '30 Oct 20',
-                      status: 'TO BE SUBMITTED',
-                      statusColor: AppColors.primaryColor,
-                    ),
-                    AssignmentCard(
-                      subject: 'English',
-                      title: 'My Bestfriend Essay',
-                      assignDate: '10 Sep 20',
-                      lastSubmissionDate: '30 Sep 20',
-                      status: 'TO BE SUBMITTED',
-                      statusColor: AppColors.primaryColor,
-                    ),
-                  ],
+                  children: _data.map((assessment) {
+                    return AssignmentCard(assessment!);
+                  }).toList(),
                 ),
               ),
             ],

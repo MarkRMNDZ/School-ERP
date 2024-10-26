@@ -12,6 +12,7 @@ import 'package:school_erp/pages/leave_application/leave_application_page.dart';
 import 'package:school_erp/pages/profile/profile_page.dart';
 import 'package:school_erp/pages/timetable/timetable_page.dart';
 import 'package:school_erp/pages/ask_doubt/ask_doubt_page.dart';
+import 'package:school_erp/pages/school_gallery/school_gallery_page.dart';
 import 'widgets/navigation_card.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:school_erp/theme/colors.dart';
@@ -77,7 +78,13 @@ class _HomePageState extends State<HomePage> {
       {
         'title': 'School Gallery',
         'icon': Icons.photo_album,
-        'callback': () => ()
+        'callback': () {
+          Navigator.push(
+              context,
+              EnterExitRoute(
+                  exitPage: context.widget,
+                  enterPage: const SchoolGalleryPage()));
+        }
       },
       {
         'title': 'Leave Application',

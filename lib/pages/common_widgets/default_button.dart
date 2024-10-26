@@ -9,29 +9,38 @@ class DefaultButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Color darkerColor = HSLColor.fromColor(AppColors.primaryColor)
+        .withLightness(
+            (HSLColor.fromColor(AppColors.primaryColor).lightness - 0.1)
+                .clamp(0.0, 1.0))
+        .toColor();
+
     return Container(
+      width: double.infinity, // Makes the button expand to full width
+      height: 50, // Fixed height for the button
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [AppColors.whiteColor, AppColors.primaryColor],
-          begin: Alignment.topRight,
-          end: Alignment.bottomLeft,
+        gradient: LinearGradient(
+          colors: [AppColors.primaryColor, darkerColor], // Blue gradient
+          begin: Alignment.centerLeft,
+          end: Alignment.centerRight,
         ),
-        borderRadius: BorderRadius.circular(10.0),
+        borderRadius: BorderRadius.circular(8.0), // Rounded corners
       ),
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.transparent,
           shadowColor: Colors.transparent,
-          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 50),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8.0),
+          ),
         ),
         child: Text(
           text,
           style: const TextStyle(
-            color: Colors.white, // White text color
+            color: Colors.white,
             fontSize: 16.0,
-            fontWeight: FontWeight.bold, // Bold text
-            letterSpacing: 2.0, // Increase letter spacing
+            fontWeight: FontWeight.w600, // Semi-bold text
           ),
         ),
       ),
