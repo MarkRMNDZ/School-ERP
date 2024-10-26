@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:school_erp/theme/text_styles.dart';
 
-class ChangePasswordCard extends StatelessWidget {
+class ChangePasswordCard extends StatefulWidget {
   const ChangePasswordCard({Key? key}) : super(key: key);
+
+  @override
+  _ChangePasswordCardState createState() => _ChangePasswordCardState();
+}
+
+class _ChangePasswordCardState extends State<ChangePasswordCard> {
+  bool _isNewPasswordVisible = false;
+  bool _isConfirmNewPasswordVisible = false;
 
   @override
   Widget build(BuildContext context) {
@@ -34,9 +42,20 @@ class ChangePasswordCard extends StatelessWidget {
               hintText: '--',
               floatingLabelBehavior: FloatingLabelBehavior.always,
               border: InputBorder.none,
+              suffixIcon: IconButton(
+                icon: Icon(
+                  _isNewPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                  color: Colors.grey,
+                ),
+                onPressed: () {
+                  setState(() {
+                    _isNewPasswordVisible = !_isNewPasswordVisible;
+                  });
+                },
+              ),
             ),
             style: bodyStyle().copyWith(fontSize: 18),
-            obscureText: true,
+            obscureText: !_isNewPasswordVisible,
           ),
           const Divider(color: Color(0xFFA5A5A5)),
           const SizedBox(height: 16.0),
@@ -48,10 +67,21 @@ class ChangePasswordCard extends StatelessWidget {
               hintText: '--',
               floatingLabelBehavior: FloatingLabelBehavior.always,
               border: InputBorder.none,
+              suffixIcon: IconButton(
+                icon: Icon(
+                  _isConfirmNewPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                  color: Colors.grey,
+                ),
+                onPressed: () {
+                  setState(() {
+                    _isConfirmNewPasswordVisible = !_isConfirmNewPasswordVisible;
+                  });
+                },
+              ),
             ),
             maxLines: 1,
             style: bodyStyle().copyWith(fontSize: 18),
-            obscureText: true, // Hide password input
+            obscureText: !_isConfirmNewPasswordVisible,
           ),
           const Divider(color: Color(0xFFA5A5A5)),
           const SizedBox(height: 25),
@@ -72,7 +102,7 @@ class ChangePasswordCard extends StatelessWidget {
                 style: buttonTextStyle().copyWith(color: Colors.white),
               ),
             ),
-          )
+          ),
         ],
       ),
     );

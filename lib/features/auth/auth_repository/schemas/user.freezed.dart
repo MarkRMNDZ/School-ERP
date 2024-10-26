@@ -20,6 +20,7 @@ AuthenticatedUser _$AuthenticatedUserFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$AuthenticatedUser {
+  int get id => throw _privateConstructorUsedError;
   String get email => throw _privateConstructorUsedError;
   @JsonKey(name: 'first_name')
   String get firstName => throw _privateConstructorUsedError;
@@ -43,7 +44,8 @@ abstract class $AuthenticatedUserCopyWith<$Res> {
       _$AuthenticatedUserCopyWithImpl<$Res, AuthenticatedUser>;
   @useResult
   $Res call(
-      {String email,
+      {int id,
+      String email,
       @JsonKey(name: 'first_name') String firstName,
       @JsonKey(name: 'last_name') String lastName});
 }
@@ -63,11 +65,16 @@ class _$AuthenticatedUserCopyWithImpl<$Res, $Val extends AuthenticatedUser>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? id = null,
     Object? email = null,
     Object? firstName = null,
     Object? lastName = null,
   }) {
     return _then(_value.copyWith(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
       email: null == email
           ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
@@ -93,7 +100,8 @@ abstract class _$$AuthenticatedUserImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String email,
+      {int id,
+      String email,
       @JsonKey(name: 'first_name') String firstName,
       @JsonKey(name: 'last_name') String lastName});
 }
@@ -111,11 +119,16 @@ class __$$AuthenticatedUserImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? id = null,
     Object? email = null,
     Object? firstName = null,
     Object? lastName = null,
   }) {
     return _then(_$AuthenticatedUserImpl(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
       email: null == email
           ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
@@ -136,13 +149,16 @@ class __$$AuthenticatedUserImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$AuthenticatedUserImpl implements _AuthenticatedUser {
   const _$AuthenticatedUserImpl(
-      {required this.email,
+      {required this.id,
+      required this.email,
       @JsonKey(name: 'first_name') required this.firstName,
       @JsonKey(name: 'last_name') required this.lastName});
 
   factory _$AuthenticatedUserImpl.fromJson(Map<String, dynamic> json) =>
       _$$AuthenticatedUserImplFromJson(json);
 
+  @override
+  final int id;
   @override
   final String email;
   @override
@@ -154,7 +170,7 @@ class _$AuthenticatedUserImpl implements _AuthenticatedUser {
 
   @override
   String toString() {
-    return 'AuthenticatedUser(email: $email, firstName: $firstName, lastName: $lastName)';
+    return 'AuthenticatedUser(id: $id, email: $email, firstName: $firstName, lastName: $lastName)';
   }
 
   @override
@@ -162,6 +178,7 @@ class _$AuthenticatedUserImpl implements _AuthenticatedUser {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$AuthenticatedUserImpl &&
+            (identical(other.id, id) || other.id == id) &&
             (identical(other.email, email) || other.email == email) &&
             (identical(other.firstName, firstName) ||
                 other.firstName == firstName) &&
@@ -171,7 +188,7 @@ class _$AuthenticatedUserImpl implements _AuthenticatedUser {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, email, firstName, lastName);
+  int get hashCode => Object.hash(runtimeType, id, email, firstName, lastName);
 
   /// Create a copy of AuthenticatedUser
   /// with the given fields replaced by the non-null parameter values.
@@ -192,7 +209,8 @@ class _$AuthenticatedUserImpl implements _AuthenticatedUser {
 
 abstract class _AuthenticatedUser implements AuthenticatedUser {
   const factory _AuthenticatedUser(
-          {required final String email,
+          {required final int id,
+          required final String email,
           @JsonKey(name: 'first_name') required final String firstName,
           @JsonKey(name: 'last_name') required final String lastName}) =
       _$AuthenticatedUserImpl;
@@ -200,6 +218,8 @@ abstract class _AuthenticatedUser implements AuthenticatedUser {
   factory _AuthenticatedUser.fromJson(Map<String, dynamic> json) =
       _$AuthenticatedUserImpl.fromJson;
 
+  @override
+  int get id;
   @override
   String get email;
   @override
