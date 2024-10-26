@@ -26,6 +26,7 @@ void main() {
           .thenAnswer((_) async => 'mockAccessToken');
       when(() => mockAuthService.getUser())
           .thenAnswer((_) async => const AuthenticatedUser(
+                id: 1,
                 email: 'test@example.com',
                 firstName: 'Test',
                 lastName: 'User',
@@ -36,6 +37,7 @@ void main() {
     expect: () => [
       const AuthState.authenticated(
         AuthenticatedUser(
+          id: 1,
           email: 'test@example.com',
           firstName: 'Test',
           lastName: 'User',
@@ -61,6 +63,7 @@ void main() {
       when(() => mockAuthService.login(any(), any()))
           .thenAnswer((_) async => const AuthRequestSuccess(
                 AuthenticatedUser(
+                  id: 1,
                   email: 'test@example.com',
                   firstName: 'Test',
                   lastName: 'User',
@@ -74,6 +77,7 @@ void main() {
       const AuthState.loading(),
       const AuthState.authenticated(
         AuthenticatedUser(
+          id: 1,
           email: 'test@example.com',
           firstName: 'Test',
           lastName: 'User',

@@ -34,6 +34,7 @@ void main() {
     const password = 'password123';
     const accessToken = 'access_token';
     const user = AuthenticatedUser(
+      id: 1,
       email: email,
       firstName: 'Test',
       lastName: 'User',
