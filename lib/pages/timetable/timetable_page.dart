@@ -58,7 +58,8 @@ class _TimeTablePageState extends State<TimeTablePage> with TickerProviderStateM
             content: [
               const SizedBox(height: 25),
               TimeTableTabBar(controller: _tabController),
-              Expanded(
+              SizedBox(
+               height: MediaQuery.of(context).size.height - kToolbarHeight - 100, 
                 child: TabBarView(
                   controller: _tabController,
                   children: [
