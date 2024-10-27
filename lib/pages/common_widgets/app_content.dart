@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 class AppContent extends StatelessWidget {
-
   final List<Widget> content;
 
   const AppContent({
@@ -11,7 +10,7 @@ class AppContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return  Expanded(
+    return Expanded(
       child: Container(
         decoration: const BoxDecoration(
           color: Colors.white,
@@ -20,7 +19,7 @@ class AppContent extends StatelessWidget {
             topRight: Radius.circular(20.0),
           ),
         ),
-        child: Column(
+        child: ListView(
           children: content,
         ),
       ),

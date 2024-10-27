@@ -65,10 +65,7 @@ class _ProfilePageState extends State<ProfilePage> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  profileCard(),
-                  SingleChildScrollView(child: profileForm())
-                ],
+                children: [profileCard(), profileForm()],
               )
             ],
           ),
@@ -103,10 +100,10 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                     ),
                   ),
-                 const Expanded(
+                  const Expanded(
                     flex: 2,
                     child: Padding(
-                      padding: EdgeInsets.only(top:15.0),
+                      padding: EdgeInsets.only(top: 15.0),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -132,8 +129,8 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                   const Expanded(
                     flex: 1,
-                    child:  Padding(
-                      padding: EdgeInsets.only(top:15.0),
+                    child: Padding(
+                      padding: EdgeInsets.only(top: 15.0),
                       child: Icon(
                         MyIcons.cameraAltOutlined,
                         size: 23,

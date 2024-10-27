@@ -32,10 +32,13 @@ class _EventsPageState extends State<EventsPage> {
     });
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return DefaultLayout(title: "Events Page", content: [
-      Expanded(
+ @override
+Widget build(BuildContext context) {
+  return DefaultLayout(
+    title: "Events Page",
+    content: [
+      SizedBox(
+        height: MediaQuery.of(context).size.height - kToolbarHeight - 100, 
         child: ListView(
           padding: const EdgeInsets.all(16.0),
           children: [
@@ -43,8 +46,9 @@ class _EventsPageState extends State<EventsPage> {
           ],
         ),
       ),
-    ]);
-  }
+    ],
+  );
+}
 
  Widget eventsCard(Map<String, dynamic> event) {
   return Padding(
