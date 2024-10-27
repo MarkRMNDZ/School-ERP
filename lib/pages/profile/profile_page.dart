@@ -27,52 +27,55 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.primaryColor,
-      body: Column(
-        children: [
-          CustomAppBar(
-            title: 'My Profile',
-            trailingWidget: TextButton.icon(
-              onPressed: () {
-                print('Done button pressed');
-              },
-              icon: const Icon(
-                Icons.check,
+  
+ @override
+Widget build(BuildContext context) {
+  return Scaffold(
+    backgroundColor: AppColors.primaryColor,
+    body: Column(
+      children: [
+        CustomAppBar(
+          title: 'My Profile',
+          trailingWidget: TextButton.icon(
+            onPressed: () {
+              print('Done button pressed');
+            },
+            icon: const Icon(
+              Icons.check,
+              color: AppColors.primaryColor,
+            ),
+            label: const Text(
+              'Done',
+              style: TextStyle(
                 color: AppColors.primaryColor,
-              ),
-              label: const Text(
-                'Done',
-                style: TextStyle(
-                  color: AppColors.primaryColor,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              style: TextButton.styleFrom(
-                backgroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20.0),
-                ),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                fontWeight: FontWeight.bold,
               ),
             ),
+            style: TextButton.styleFrom(
+              backgroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.0),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+            ),
           ),
-          AppContent(
-            content: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [profileCard(), profileForm()],
-              )
-            ],
-          ),
-        ],
-      ),
-    );
-  }
+        ),
+        AppContent(
+          content: [
+            profileCard(),
+            AppContent(
+              content: [
+                profileForm(), // Wrap profileForm in its own AppContent
+                // More widgets if needed
+              ],
+              isScrollable: true, // Make this specific content scrollable
+            ),
+          ],
+        ),
+      ],
+    ),
+  );
+}
 
   Widget profileCard() {
     return Row(
@@ -180,15 +183,17 @@ class _ProfilePageState extends State<ProfilePage> {
       ],
     ];
 
-    return SizedBox(
-      width: double.infinity,
-      child: ListView.builder(
-        physics: const NeverScrollableScrollPhysics(),
-        shrinkWrap: true,
-        itemCount: formTextDataList.length,
-        itemBuilder: (context, index) {
-          return buildFormRow(formTextDataList[index]);
-        },
+    return SingleChildScrollView(
+      child: SizedBox(
+        width: double.infinity,
+        child: ListView.builder(
+          physics: const NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+          itemCount: formTextDataList.length,
+          itemBuilder: (context, index) {
+            return buildFormRow(formTextDataList[index]);
+          },
+        ),
       ),
     );
   }
