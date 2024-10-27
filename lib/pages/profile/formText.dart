@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:math';
 
 class FormText extends StatelessWidget {
   final double width;
@@ -7,7 +8,7 @@ class FormText extends StatelessWidget {
   final String value;
   final MainAxisAlignment mainAxisAlignment;
   final CrossAxisAlignment crossAxisAlignment;
-  final Icon? icon; // Optional icon parameter
+  final Icon? icon; 
 
   const FormText({
     super.key,
@@ -17,38 +18,54 @@ class FormText extends StatelessWidget {
     required this.value,
     this.mainAxisAlignment = MainAxisAlignment.spaceBetween,
     this.crossAxisAlignment = CrossAxisAlignment.center,
-    this.icon, // Initialize icon as null by default
+    this.icon, 
   });
 
   @override
   Widget build(BuildContext context) {
+   
+    double screenWidth = MediaQuery.of(context).size.width;
+    double fontSize = min(screenWidth * 0.04, 18.0); // Set maximum font size to 18
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 5.0),
       child: Container(
         width: width,
         height: height,
         decoration: const BoxDecoration(
-          border: Border(bottom: BorderSide(color: Colors.black, width: 1))
+          border: Border(bottom: BorderSide(color: Colors.black, width: 1)),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(label),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: min(fontSize * 0.9, 16.0), 
+              ),
+              softWrap: true,
+              overflow: TextOverflow.ellipsis, 
+            ),
             Padding(
               padding: const EdgeInsets.only(top: 8.0),
               child: Row(
                 mainAxisAlignment: mainAxisAlignment,
                 crossAxisAlignment: crossAxisAlignment,
                 children: [
-                  Text(
-                    value,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16.0,
+                  Expanded(
+                    child: Text(
+                      value,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: fontSize, 
+                      ),
+                      maxLines: 2, 
+                      softWrap: true,
+                      overflow: TextOverflow.ellipsis, 
                     ),
                   ),
-                  if (icon != null) // Conditional check for icon
+                  if (icon != null) 
                     Padding(
                       padding: const EdgeInsets.only(left: 8.0),
                       child: icon!,
