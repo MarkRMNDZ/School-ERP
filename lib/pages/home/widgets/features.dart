@@ -21,17 +21,19 @@ class Features extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<FeatureSection> features = [
-      const FeatureSection(title: 'Core', features: [
+      const FeatureSection(title: 'Core', features: <FeatureButton> [
         FeatureButton(title: 'Quiz', icon: Icons.edit_note_outlined, target: DefaultPage()),
         FeatureButton(title: 'Homework', icon: Icons.assignment, target: AssignmentListPage()),
         FeatureButton(title: 'Learn', icon: Icons.local_library_outlined, target: LearnPage()),
+        FeatureButton(title: 'Attendance', icon: Icons.emoji_people_outlined, target: DefaultPage()),
+        FeatureButton(title: 'Billing', icon: Icons.payment_outlined, target: DefaultPage()),
       ]),
-      FeatureSection(title: 'Time Calendar', features: [
+      FeatureSection(title: 'Time Calendar', features: <FeatureButton>[
         FeatureButton(title: 'Calendar', icon: Icons.calendar_month, target: CalendarAttendancePage()),
         const FeatureButton(title: 'Subject\nSchedule', icon: Icons.event_note, target: TimeTablePage()),
         const FeatureButton(title: 'Apply Absents', icon: Icons.edit_calendar, target: LeaveApplicationPage()),
       ]),
-      const FeatureSection(title: 'Activities', features: [
+      const FeatureSection(title: 'Activities', features: <FeatureButton> [
         FeatureButton(title: 'Events', icon: Icons.celebration, target: EventsPage()),
         FeatureButton(title: 'School Gallery', icon: Icons.collections, target: SchoolGalleryPage()),
       ]),
@@ -87,7 +89,7 @@ class Features extends StatelessWidget {
                       ),
                       Container(
                         padding: const EdgeInsets.symmetric(vertical: 4),
-                        width: 75,
+                        width: 78,
                         height: 50,
                         child: Text(
                           feature.title,

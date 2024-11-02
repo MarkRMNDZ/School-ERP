@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:school_erp/pages/common_widgets/default_layout.dart';
+import 'package:school_erp/theme/text_styles.dart';
 import 'package:table_calendar/table_calendar.dart';
 import './widgets/attendance_title.dart';
 import 'package:intl/intl.dart';
@@ -54,43 +55,40 @@ class _CalendarAttendancePageState extends State<CalendarAttendancePage> {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultLayout(
-      title: 'Calendar',
-      content: [
-        CalendarWidget(
-          focusedDay: _focusedDay,
-          selectedDay: _selectedDay,
-          onDaySelected: _handleDaySelected,
-          onPageChanged: (focusedDay) {
-            _onMonthChanged(focusedDay);
-          },
+    return DefaultLayout(title: 'Calendar', content: [
+      CalendarWidget(
+        focusedDay: _focusedDay,
+        selectedDay: _selectedDay,
+        onDaySelected: _handleDaySelected,
+        onPageChanged: (focusedDay) {
+          _onMonthChanged(focusedDay);
+        },
+      ),
+      const SizedBox(height: 20.0),
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Padding(
+              padding: EdgeInsets.only(left: 0),
+              child: AttendanceTitle(),
+            ),
+            DropdownFilter(
+              selectedFilter: _selectedFilter,
+              onChanged: (newValue) {
+                setState(() {
+                  _selectedFilter = newValue!;
+                });
+              },
+            ),
+          ],
         ),
-        const SizedBox(height: 20.0),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Padding(
-                padding: EdgeInsets.only(left: 0),
-                child: AttendanceTitle(),
-              ),
-              DropdownFilter(
-                selectedFilter: _selectedFilter,
-                onChanged: (newValue) {
-                  setState(() {
-                    _selectedFilter = newValue!;
-                  });
-                },
-              ),
-            ],
-          ),
-        ),
-        AttendanceList(daysInMonth: _daysInMonth),
-      ]);
+      ),
+      AttendanceList(daysInMonth: _daysInMonth),
+    ]);
   }
 }
-
 
 class CalendarWidget extends StatelessWidget {
   final DateTime focusedDay;
@@ -108,7 +106,10 @@ class CalendarWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+
     return TableCalendar(
+      daysOfWeekHeight: 28,
       focusedDay: focusedDay,
       firstDay: DateTime.utc(2020, 1, 1),
       lastDay: DateTime.utc(2123, 12, 31),
@@ -116,16 +117,104 @@ class CalendarWidget extends StatelessWidget {
       onDaySelected: (selectedDay, focusedDay) {
         onDaySelected(selectedDay, focusedDay);
       },
-      headerStyle: const HeaderStyle(
-        titleCentered: true
+      headerStyle: HeaderStyle(
+        titleCentered: true,
+        formatButtonVisible: false,
+        titleTextStyle: TextStyle(
+          fontSize:
+              screenWidth * 0.05, // Adjusted font size based on screen width
+          fontWeight: FontWeight.bold,
+        ),
       ),
       onPageChanged: (focusedDay) {
         onPageChanged(focusedDay);
       },
-      availableCalendarFormats:  const {
-         CalendarFormat.month: 'Month',
-      }
+      availableCalendarFormats: const {
+        CalendarFormat.month: 'Month',
+      },
+      daysOfWeekStyle: DaysOfWeekStyle(
+        weekdayStyle: TextStyle(
+          fontSize: screenWidth * 0.035, // Responsive font size
+          fontWeight: FontWeight.w500,
+        ),
+        weekendStyle: TextStyle(
+          fontSize: screenWidth * 0.035, // Responsive font size
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+      calendarStyle: CalendarStyle(
+        defaultTextStyle: TextStyle(
+          fontSize: screenWidth * 0.035, // Responsive font size for days
+        ),
+        weekendTextStyle: TextStyle(
+          fontSize: screenWidth * 0.035,
+        ),
+      ),
+      calendarBuilders: CalendarBuilders(
+        headerTitleBuilder: (context, focusedDay) {
+          return GestureDetector(
+            onTap: () => _showMonthSelectionDialog(context),
+            child: Center(
+              child: Text(
+                DateFormat('MMMM yyyy').format(focusedDay),
+                style: bodyStyle().copyWith(fontSize: screenWidth * 0.05),
+              ),
+            ),
+          );
+        },
+      ),
     );
+  }
+
+  void _showMonthSelectionDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Select Month"),
+          content: SizedBox(
+            width: 300,
+            height: 300,
+            child: ListView.builder(
+              itemCount: 12,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  title: Text(
+                    _getMonthName(index),
+                    style: TextStyle(
+                      fontSize: MediaQuery.of(context).size.width * 0.045,
+                    ),
+                  ),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    final selectedMonth = DateTime(focusedDay.year, index + 1);
+                    onPageChanged(selectedMonth);
+                  },
+                );
+              },
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  String _getMonthName(int monthIndex) {
+    const monthNames = [
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December'
+    ];
+    return monthNames[monthIndex];
   }
 }
 
@@ -147,7 +236,8 @@ class DropdownFilter extends StatelessWidget {
         _buildDropdownItem('All', Colors.white, Colors.grey),
         _buildDropdownItem('Absent', AppColors.dangerColor, Colors.transparent),
         _buildDropdownItem('Late', AppColors.warningColor, Colors.transparent),
-        _buildDropdownItem('Holiday', AppColors.successColor, Colors.transparent),
+        _buildDropdownItem(
+            'Holiday', AppColors.successColor, Colors.transparent),
       ],
       onChanged: onChanged,
       underline: const SizedBox(),

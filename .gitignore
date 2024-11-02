@@ -1,3 +1,6 @@
+*.freezed.dart
+*.g.dart
+
 ### Flutter Generated
 .flutter-plugins-dependencies
 

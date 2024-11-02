@@ -17,8 +17,7 @@ class AuthRepository {
   String get clientId => dotenv.get('CLIENT_ID');
 
   Future<AuthResult> login(String email, String password) async {
-
-    try{
+    try {
       final clientToken = await _getClientToken();
       final uri = Uri.http(baseUrl, "/api/login");
       final res = await _httpClient.post(
@@ -39,8 +38,7 @@ class AuthRepository {
         return AuthResult.failure(res.statusCode, message);
       }
       return AuthRequestSuccess.fromJson(data);
-
-    }catch (e){
+    } catch (e) {
       print(e);
       return AuthResult.failure(500, e.toString());
     }
@@ -72,6 +70,7 @@ class AuthRepository {
           "client_secret": clientSecret
         }));
     final parsed = jsonDecode(res.body);
+    print(res.body);
     final String accessToken = parsed['access_token'];
     print(accessToken);
 
