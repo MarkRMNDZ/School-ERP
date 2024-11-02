@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 
 class AppContent extends StatelessWidget {
   final List<Widget> content;
-  final bool isScrollable; // New parameter to control scrolling
+  final bool isScrollable; 
 
   const AppContent({
     super.key,
     required this.content,
-    this.isScrollable = false, // Default to false
+    this.isScrollable = false,
   });
 
   @override
