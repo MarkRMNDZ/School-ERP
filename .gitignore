@@ -898,8 +898,13 @@ DerivedData/
 
 *.env
 /macos
+/macos/Flutter/GeneratedPluginRegistrant.swift
 /linux
+/linux/flutter/generated_plugin_registrant.cc
+/linux/flutter/generated_plugins.cmake
 /windows
+/windows/flutter/generated_plugin_registrant.cc
+/windows/flutter/generated_plugins.cmake
 /lib/features/auth/auth_repository/schemas/auth_response.g.dart
 /lib/features/auth/auth_repository/schemas/auth_response.freezed.dart
 /lib/features/auth/bloc/auth_state.freezed.dart
