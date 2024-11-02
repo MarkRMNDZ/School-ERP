@@ -22,7 +22,7 @@ class PowerSyncApiClient extends ApiClient {
         body: record != null ? jsonEncode(record) : null);
   }
 
-  Future<Map<String, dynamic>> getPowersyncToken(int userId) async {
+  Future<Map<String, dynamic>> getPowersyncToken() async {
     final res = await get('/api/get_powersync_token');
     if (res.statusCode == 200) {
       return json.decode(res.body);

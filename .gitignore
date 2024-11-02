@@ -1,6 +1,10 @@
 ### Flutter Generated
 .flutter-plugins-dependencies
 
+# ignore auto generated files by JSON and Freezed
+*.freezed.dart
+*.g.dart
+
 # Miscellaneous
 *.class
 *.lock
@@ -896,3 +900,8 @@ DerivedData/
 /macos
 /linux
 /windows
+/lib/features/auth/auth_repository/schemas/auth_response.g.dart
+/lib/features/auth/auth_repository/schemas/auth_response.freezed.dart
+/lib/features/auth/bloc/auth_state.freezed.dart
+/lib/features/auth/auth_repository/schemas/user.freezed.dart
+/lib/features/auth/auth_repository/schemas/user.g.dart

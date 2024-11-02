@@ -9,6 +9,13 @@ void main() {
   late AuthService mockAuthService;
   late AuthBloc authBloc;
 
+  // test user info
+  const int id = 1;
+  const String email = 'text@example.com';
+  const String firstName = 'Test';
+  const String lastName = 'User';
+  const String role = 'teacher';
+
   setUp(() {
     mockAuthService = MockAuthService();
     authBloc = AuthBloc(mockAuthService);
@@ -24,21 +31,26 @@ void main() {
       when(() => mockAuthService.isLoggedIn()).thenAnswer((_) async => true);
       when(() => mockAuthService.getToken())
           .thenAnswer((_) async => 'mockAccessToken');
-      when(() => mockAuthService.getUser())
-          .thenAnswer((_) async => const AuthenticatedUser(
-                email: 'test@example.com',
-                firstName: 'Test',
-                lastName: 'User',
-              ));
+      when(() => mockAuthService.getUser()).thenAnswer(
+        (_) async => const AuthenticatedUser(
+          id: id,
+          email: email,
+          firstName: firstName,
+          lastName: lastName,
+          role: role,
+        ),
+      );
       return authBloc;
     },
     act: (bloc) => bloc.add(AuthCheckRequested()),
     expect: () => [
       const AuthState.authenticated(
         AuthenticatedUser(
-          email: 'test@example.com',
-          firstName: 'Test',
-          lastName: 'User',
+          id: id,
+          email: email,
+          firstName: firstName,
+          lastName: lastName,
+          role: role,
         ),
         'mockAccessToken',
       ),
@@ -61,9 +73,11 @@ void main() {
       when(() => mockAuthService.login(any(), any()))
           .thenAnswer((_) async => const AuthRequestSuccess(
                 AuthenticatedUser(
-                  email: 'test@example.com',
-                  firstName: 'Test',
-                  lastName: 'User',
+                  id: id,
+                  email: email,
+                  firstName: firstName,
+                  lastName: lastName,
+                  role: role,
                 ),
                 'mockAccessToken',
               ));
@@ -74,9 +88,11 @@ void main() {
       const AuthState.loading(),
       const AuthState.authenticated(
         AuthenticatedUser(
-          email: 'test@example.com',
-          firstName: 'Test',
-          lastName: 'User',
+          id: id,
+          email: email,
+          firstName: firstName,
+          lastName: lastName,
+          role: role,
         ),
         'mockAccessToken',
       ),

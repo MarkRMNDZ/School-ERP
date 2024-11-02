@@ -32,7 +32,7 @@ class SchoolERPBackendConnector extends PowerSyncBackendConnector {
     if (user == null) {
       throw Exception('User is not logged in');
     }
-    final session = await apiClient.getPowersyncToken(user.id);
+    final session = await apiClient.getPowersyncToken();
     return PowerSyncCredentials(
         endpoint: powersyncUrl, token: session['token']);
   }

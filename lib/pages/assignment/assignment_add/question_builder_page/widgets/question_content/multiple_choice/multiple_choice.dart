@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:school_erp/pages/assignment/assignment_add/question_builder_page/widgets/question_content/action_button.dart';
+import 'package:school_erp/pages/assignment/assignment_add/question_builder_page/widgets/question_content/add_item_button.dart';
+import 'package:school_erp/pages/assignment/assignment_add/question_builder_page/widgets/question_content/multiple_choice/multiple_choice_answer_modal.dart';
 import 'package:school_erp/pages/common_widgets/custom_snackbar.dart';
-import 'add_item_button.dart';
-import 'action_button.dart';
 
 class MultipleChoiceContent extends StatefulWidget {
   final TextEditingController questionController;
@@ -14,7 +15,6 @@ class MultipleChoiceContent extends StatefulWidget {
 class _MultipleChoiceContentState extends State<MultipleChoiceContent> {
   final List<String> _choices = ['', '', '', ''];
   final List<TextEditingController> _controllers = [];
-  String? _selectedAnswer;
 
   @override
   void initState() {
@@ -61,7 +61,7 @@ class _MultipleChoiceContentState extends State<MultipleChoiceContent> {
     });
   }
 
-  void _showAnswerDialog() {
+  void _showAnswerModal() {
     List<String> nonEmptyChoices =
         _choices.where((choice) => choice.isNotEmpty).toList();
 
@@ -76,54 +76,11 @@ class _MultipleChoiceContentState extends State<MultipleChoiceContent> {
       return;
     }
 
-    _selectedAnswer = nonEmptyChoices.first;
-
-    showDialog(
+    final modal = MultipleChoiceAnswerModal(
       context: context,
-      builder: (BuildContext context) {
-        return StatefulBuilder(
-          builder: (context, setState) {
-            return AlertDialog(
-              content: DropdownButtonFormField<String>(
-                decoration: const InputDecoration(
-                  labelText: "Answer",
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey),
-                  ),
-                ),
-                value: _selectedAnswer,
-                icon: const Icon(Icons.arrow_drop_down),
-                isExpanded: true,
-                onChanged: (String? newValue) {
-                  if (newValue != null) {
-                    setState(() {
-                      _selectedAnswer = newValue;
-                    });
-                  }
-                },
-                items: nonEmptyChoices
-                    .map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
-              ),
-              actions: <Widget>[
-                Center(
-                  child: ActionButton(
-                    onPressed: () {
-                      //TODO Saving logic here + navigation
-                    },
-                    text: "Next",
-                  ),
-                ),
-              ],
-            );
-          },
-        );
-      },
+      choices: nonEmptyChoices,
     );
+    modal.show();
   }
 
   @override
@@ -143,10 +100,8 @@ class _MultipleChoiceContentState extends State<MultipleChoiceContent> {
                         controller: _controllers[idx],
                         decoration: InputDecoration(
                           border: const OutlineInputBorder(),
-                          hintText:
-                              'Choice ${String.fromCharCode(65 + idx)}', // 65 here represents A
-                          hintStyle: const TextStyle(
-                              color: Colors.grey), // Set hint text to gray
+                          hintText: 'Choice ${String.fromCharCode(65 + idx)}',
+                          hintStyle: const TextStyle(color: Colors.grey),
                           suffixIcon: IconButton(
                             icon: const Icon(Icons.clear),
                             onPressed: () => _clearChoice(idx),
@@ -167,7 +122,7 @@ class _MultipleChoiceContentState extends State<MultipleChoiceContent> {
             },
           ),
         ),
-        ActionButton(onPressed: _showAnswerDialog, text: "Provide Answer"),
+        ActionButton(onPressed: _showAnswerModal, text: "Next"),
       ],
     );
   }

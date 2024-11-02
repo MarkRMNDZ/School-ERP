@@ -1,43 +1,39 @@
 import 'package:flutter/material.dart';
+import 'package:school_erp/dtos/assessment/assessment_create_dto.dart';
+import 'package:school_erp/dtos/assessment/assessment_taker_create_dto.dart';
+import 'package:school_erp/features/assessment/assessment_service.dart';
+import 'package:school_erp/features/powersync/db.dart';
+import 'package:school_erp/features/transition/clean_slide_transition.dart';
 import 'package:school_erp/pages/assignment/assignment_add/question_builder_page/question_builder_page.dart';
-import 'package:school_erp/pages/common_widgets/animation_widgets/fade_page_transition.dart';
+import 'package:school_erp/pages/common_widgets/default_layout.dart';
 import 'package:school_erp/pages/common_widgets/form_fields/number_input.dart';
-import 'package:school_erp/pages/common_widgets/rounded_container.dart';
-import 'package:school_erp/pages/common_widgets/custom_app_bar.dart';
 import 'package:school_erp/pages/common_widgets/form_fields/datetime_picker.dart';
 import 'package:school_erp/pages/common_widgets/default_button.dart';
 import 'package:school_erp/pages/common_widgets/form_fields/labeled_dropdown.dart';
-import 'package:school_erp/theme/colors.dart';
-import 'form_data.dart';
 
 class QuestionSetupPage extends StatelessWidget {
-  const QuestionSetupPage({super.key});
+  final AssessmentCreateDTOBuilder assessmentCreateDTOBuilder;
+  final AssessmentTakerCreateDTOBuilder assessmentTakerCreateDTOBuilder;
+
+  const QuestionSetupPage(
+      this.assessmentCreateDTOBuilder, this.assessmentTakerCreateDTOBuilder,
+      {super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-        backgroundColor: AppColors.primaryColor,
-        body: SafeArea(
-          child: Column(
-            children: [
-              CustomAppBar(
-            title: 'Assignment Set up',
-          ),
-              Expanded(
-                child: RoundedContainer(
-                  borderRadius: 30.0,
-                  child: FormContent(),
-                ),
-              ),
-            ],
-          ),
-        ),
-    );
+    return DefaultLayout(title: 'Assignment Setup', content: [
+      FormContent(assessmentCreateDTOBuilder, assessmentTakerCreateDTOBuilder)
+    ]);
   }
 }
 
 class FormContent extends StatefulWidget {
-  const FormContent({super.key});
+  final AssessmentCreateDTOBuilder assessmentCreateDTOBuilder;
+  final AssessmentTakerCreateDTOBuilder assessmentTakerCreateDTOBuilder;
+
+  const FormContent(
+      this.assessmentCreateDTOBuilder, this.assessmentTakerCreateDTOBuilder,
+      {super.key});
 
   @override
   _FormContentState createState() => _FormContentState();
@@ -45,12 +41,10 @@ class FormContent extends StatefulWidget {
 
 class _FormContentState extends State<FormContent> {
   final _formKey = GlobalKey<FormState>();
-  late FormData formData;
 
   @override
   void initState() {
     super.initState();
-    formData = FormData();
   }
 
   @override
@@ -64,39 +58,40 @@ class _FormContentState extends State<FormContent> {
           children: [
             DateTimePickerFormField(
               label: 'Select quiz time',
-              initialValue: formData.selectedDate,
+              initialValue: DateTime.now(),
               onSaved: (newValue) {
-                formData.selectedDate = newValue!;
+                widget.assessmentCreateDTOBuilder.startTime = newValue!;
               },
             ),
             const SizedBox(height: 16),
             DateTimePickerFormField(
               label: 'Select question close time:',
-              initialValue: formData.selectedCloseDate,
+              initialValue: DateTime.now(),
               onSaved: (newValue) {
-                formData.selectedCloseDate = newValue!;
+                widget.assessmentCreateDTOBuilder.deadLine = newValue!;
               },
             ),
             const SizedBox(height: 16),
             NumberInputFormField(
               label: 'No. of   Questions',
-              initialValue: formData.totalQuestionCount,
+              initialValue: 20,
               onSaved: (value) {
-                formData.totalQuestionCount = value!;
+                widget.assessmentCreateDTOBuilder.totalQuestions = value!;
               },
             ),
             const SizedBox(height: 16),
             LabeledDropdownFormField<bool>(
               label: "Select Randomness",
               dropdownItems: const {"True": true, "False": false},
-              initialValue: formData.isRandom,
-              onChanged: (value) {
-                formData.isRandom = value!;
+              initialValue: false,
+              onSaved: (value) {
+                widget.assessmentCreateDTOBuilder.randomizeSequence = value!;
               },
             ),
             const SizedBox(height: 32),
             DefaultButton(
-              onPressed: () => _onNextPressed(context, formData),
+              onPressed: () =>
+                  _onNextPressed(context, widget.assessmentCreateDTOBuilder),
               text: "Next",
             ),
           ],
@@ -105,18 +100,22 @@ class _FormContentState extends State<FormContent> {
     );
   }
 
-  void _onNextPressed(BuildContext context, FormData formData) {
+  void _onNextPressed(
+      BuildContext context, AssessmentCreateDTOBuilder formData) async {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-      // place holder for do something with form data
-      print(formData.selectedDate);
-      print(formData.selectedCloseDate);
-      print(formData.totalQuestionCount);
-      print(formData.isRandom);
+      final assessmentService =
+          AssessmentService(database: db); // di ini dapat didi temp didi muna
+      await assessmentService.create(
+        assessmentDTOBuilder: widget.assessmentCreateDTOBuilder,
+        assessmentTakerDTOBuilder: widget.assessmentTakerCreateDTOBuilder,
+      );
 
-      Navigator.of(context).push(
-        FadePageRoute(
-          page: const QuestionBuilderPage(),
+      if (!mounted) return;
+
+      Navigator.pushReplacement(
+        context,
+        createSlideRoute(const QuestionBuilderPage(),
         ),
       );
     }
