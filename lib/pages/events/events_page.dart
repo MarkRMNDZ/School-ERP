@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:school_erp/features/transition/clean_slide_transition.dart';
 import 'package:school_erp/theme/colors.dart';
 import 'package:school_erp/theme/text_styles.dart';
 import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:school_erp/pages/common_widgets/default_layout.dart';
 import 'package:school_erp/pages/events/events_detail/events_detail_page.dart';
-import 'package:school_erp/pages/EnterExitRoute.dart';
 
 
 class EventsPage extends StatefulWidget {
@@ -55,9 +55,7 @@ class _EventsPageState extends State<EventsPage> {
         onTap: () {
           Navigator.push(
             context,
-            EnterExitRoute(
-              exitPage: context.widget,
-              enterPage: EventDetailsPage(event: event),
+            createSlideRoute(EventDetailsPage(event: event),
             ),
           );
         },

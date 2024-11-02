@@ -10,9 +10,12 @@ class QuestionBuilderPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Material(
-        color: AppColors.primaryColor,
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Create Question"),
+        backgroundColor: AppColors.primaryColor,
+      ),
+      body: const Material(
         child: SafeArea(
           child: Column(
             children: [

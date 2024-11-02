@@ -1,17 +1,17 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:school_erp/dtos/assessment/assessment_create_dto.dart';
+import 'package:school_erp/dtos/assessment/assessment_taker_create_dto.dart';
+import 'package:school_erp/enums/assessment_type.dart';
+import 'package:school_erp/enums/assignment_type.dart';
+import 'package:school_erp/features/auth/auth.dart';
+import 'package:school_erp/features/auth/utils.dart';
+import 'package:school_erp/features/transition/clean_slide_transition.dart';
+import 'package:school_erp/models/section.dart';
+import 'package:school_erp/models/subject_year.dart';
+import 'package:school_erp/models/teacher.dart';
 import 'package:school_erp/pages/assignment/assignment_add/assignment_setup_page/question_setup_page.dart';
-import 'package:school_erp/pages/common_widgets/animation_widgets/fade_page_transition.dart';
 import 'package:school_erp/theme/colors.dart';
-import 'package:school_erp/pages/EnterExitRoute.dart';
-import 'package:school_erp/pages/assignment/assignment_add/assignment_add_page/assignment_add_page.dart';
-
-enum AssignmentType {
-  online,
-  inApp,
-  takeHome,
-}
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AddAssignmentForm extends StatefulWidget {
   const AddAssignmentForm({super.key});
@@ -21,65 +21,94 @@ class AddAssignmentForm extends StatefulWidget {
 }
 
 class _AddAssignmentFormState extends State<AddAssignmentForm> {
-  String? selectedClassTitle;
-  String? selectedSubject;
-  String? aiGenerated;
-  List<String> classList = [];
-  List<String> subjectList = [];
-  AssignmentType? selectedType;
-  String? selectedAIOption;
-  List<String> aiOptions = ["Yes", "No"];
+  List<Section?> sections = [];
+  List<SubjectYear?> subjectYears = [];
+  AssignmentType? selectedType = AssignmentType.inApp;
+  Section? selectedSection;
+  SubjectYear? selectedSubject;
+  bool isLoading = true;
+
+  final AssessmentCreateDTOBuilder assessmentCreateDTOBuilder =
+      AssessmentCreateDTOBuilder();
+
+  final AssessmentTakerCreateDTOBuilder assessmentTakerCreateDTOBuilder =
+      AssessmentTakerCreateDTOBuilder();
 
   @override
   void initState() {
     super.initState();
-    _loadClassesTitle();
-    _loadSubjects();
-    selectedType = AssignmentType.online;
+    _initializeForm();
   }
 
-  Future<void> _loadClassesTitle() async {
-    String jsonString =
-        await rootBundle.loadString('assets/addAssignmentData/classes.json');
-    List<dynamic> jsonResponse = json.decode(jsonString);
-    setState(() {
-      classList = jsonResponse.cast<String>();
-      selectedClassTitle = classList.isNotEmpty ? classList[0] : null;
-    });
+  Future<void> _initializeForm() async {
+    try {
+      _createAssessmentDTO();
+      await _loadData();
+    } catch (e) {
+      _handleError('Initialization error: ${e.toString()}');
+    }
   }
 
-  Future<void> _loadSubjects() async {
-    String jsonString =
-        await rootBundle.loadString('assets/addAssignmentData/subjects.json');
-    List<dynamic> jsonResponse = json.decode(jsonString);
-    setState(() {
-      subjectList = jsonResponse.cast<String>();
-      selectedSubject = subjectList.isNotEmpty ? subjectList[0] : null;
-    });
+  void _createAssessmentDTO() {
+    try {
+      final authState = context.read<AuthBloc>().state;
+      final teacherId = getTeacherId(authState);
+
+      assessmentCreateDTOBuilder.assessmentType = AssessmentType.assignment;
+      assessmentCreateDTOBuilder.preparedById = teacherId;
+    } catch (e) {
+      throw Exception('Failed to create assessment: ${e.toString()}');
+    }
+  }
+
+  Future<void> _loadData() async {
+    try {
+      final results = await Future.wait([
+        Teacher.sections(),
+        Teacher.activeSubjects(),
+      ]);
+
+      if (!mounted) return;
+
+      setState(() {
+        sections = results[0] as List<Section?>;
+        subjectYears = results[1] as List<SubjectYear?>;
+        selectedSection = sections.firstOrNull;
+        selectedSubject = subjectYears.firstOrNull;
+        isLoading = false;
+      });
+    } catch (e) {
+      _handleError('Error loading data: ${e.toString()}');
+    }
+  }
+
+  void _handleError(String message) {
+    if (!mounted) return;
+
+    setState(() => isLoading = false);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
   }
 
   final _formKey = GlobalKey<FormState>();
 
   void _validateAndSubmit() {
     if (_formKey.currentState!.validate()) {
-    Navigator.push(
-                context,
-                EnterExitRoute(exitPage: context.widget, enterPage: const QuestionSetupPage()));
+      _formKey.currentState!.save();
+      Navigator.push(
+        context,
+        createSlideRoute(QuestionSetupPage(
+            assessmentCreateDTOBuilder,
+            assessmentTakerCreateDTOBuilder,
+          ),
+        ),
+      );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please fix the errors in red')),
       );
-    }
-  }
-
-  String assignmentTypeToString(AssignmentType type) {
-    switch (type) {
-      case AssignmentType.online:
-        return "Online";
-      case AssignmentType.inApp:
-        return "In App";
-      case AssignmentType.takeHome:
-        return "Take Home";
     }
   }
 
@@ -96,76 +125,86 @@ class _AddAssignmentFormState extends State<AddAssignmentForm> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 5),
-                DropdownButtonFormField<String>(
-                  value: selectedClassTitle,
-                  items: classList.map((String classTitle) {
-                    return DropdownMenuItem<String>(
-                      value: classTitle,
-                      child: Text(classTitle),
+                DropdownButtonFormField<Section?>(
+                  value: selectedSection,
+                  items: sections.map((Section? value) {
+                    return DropdownMenuItem<Section?>(
+                      value: value,
+                      child: Text(value!.name),
                     );
                   }).toList(),
-                  onChanged: (newValue) {
+                  onChanged: (Section? newValue) {
                     setState(() {
-                      selectedClassTitle = newValue;
+                      selectedSection = newValue;
                     });
+                  },
+                  onSaved: (Section? newValue) {
+                    assessmentTakerCreateDTOBuilder.sectionId = newValue!.id;
                   },
                   decoration: const InputDecoration(
                     labelText: 'Select Class',
                     border: OutlineInputBorder(),
                   ),
                   validator: (value) {
-                    if (value == null || value.isEmpty) {
+                    if (value == null) {
                       return 'Please select a Class';
                     }
                     return null;
                   },
                 ),
                 const SizedBox(height: 25),
-                DropdownButtonFormField<String>(
-                  value: selectedSubject,
-                  items: subjectList.map((String subject) {
-                    return DropdownMenuItem<String>(
-                      value: subject,
-                      child: Text(subject),
+                DropdownButtonFormField<SubjectYear?>(
+                  value: subjectYears.isEmpty ? null : subjectYears[0],
+                  items: subjectYears.map((SubjectYear? subjectYear) {
+                    return DropdownMenuItem<SubjectYear?>(
+                      value: subjectYear,
+                      child: Text(subjectYear?.subjectName ?? ''),
                     );
                   }).toList(),
-                  onChanged: (newValue) {
+                  onChanged: (SubjectYear? newValue) {
                     setState(() {
                       selectedSubject = newValue;
                     });
+                  },
+                  onSaved: (SubjectYear? newValue) {
+                    assessmentTakerCreateDTOBuilder.subjectYearId =
+                        newValue!.id;
                   },
                   decoration: const InputDecoration(
                     labelText: 'Select Subject',
                     border: OutlineInputBorder(),
                   ),
                   validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please select a type';
+                    if (value == null) {
+                      return 'Please select a subject';
                     }
                     return null;
                   },
                 ),
                 const SizedBox(height: 25),
                 TextFormField(
-                  maxLength: 30,
-                  decoration: const InputDecoration(
-                    hintText: 'What should you call this assignment',
-                    labelText: 'Title',
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Enter Title';
-                    }
-                    return null;
-                  },
-                ),
+                    maxLength: 30,
+                    decoration: const InputDecoration(
+                      hintText: 'What should you call this assignment',
+                      labelText: 'Title',
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Enter Title';
+                      }
+                      return null;
+                    },
+                    onSaved: (value) {
+                      assessmentCreateDTOBuilder.title = value!;
+                    }),
                 const SizedBox(height: 25),
                 DropdownButtonFormField<AssignmentType>(
-                  value: selectedType,
-                  items: AssignmentType.values.map((AssignmentType type) {
+                  value: AssignmentType.inApp,
+                  items: AssignmentType.values
+                      .map((AssignmentType assignmentType) {
                     return DropdownMenuItem<AssignmentType>(
-                      value: type,
-                      child: Text(assignmentTypeToString(type)),
+                      value: assignmentType,
+                      child: Text(assignmentType.displayName),
                     );
                   }).toList(),
                   onChanged: (newValue) {
@@ -214,6 +253,7 @@ class _AddAssignmentFormState extends State<AddAssignmentForm> {
       ),
     );
   }
+
   Widget _buildAssignmentTypeForm() {
     switch (selectedType) {
       case AssignmentType.online:
@@ -250,17 +290,17 @@ class _AddAssignmentFormState extends State<AddAssignmentForm> {
         return Column(
           children: [
             SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-            DropdownButtonFormField<String>(
-              value: selectedAIOption,
-              items: aiOptions.map((String option) {
-                return DropdownMenuItem<String>(
+            DropdownButtonFormField<bool>(
+              value: false,
+              items: [true, false].map((bool option) {
+                return DropdownMenuItem<bool>(
                   value: option,
-                  child: Text(option),
+                  child: Text(option ? 'Yes' : 'No'),
                 );
               }).toList(),
               onChanged: (newValue) {
                 setState(() {
-                  selectedAIOption = newValue;
+                  // no corresponding mapping yet
                 });
               },
               decoration: const InputDecoration(
@@ -268,7 +308,7 @@ class _AddAssignmentFormState extends State<AddAssignmentForm> {
                 border: OutlineInputBorder(),
               ),
               validator: (value) {
-                if (value == null || value.isEmpty) {
+                if (value == null) {
                   return 'Please select an option';
                 }
                 return null;
@@ -303,12 +343,7 @@ class _AddAssignmentFormState extends State<AddAssignmentForm> {
             content: Text('Invalid assignment type selected'),
           ),
         );
-        return const SizedBox.shrink(); 
+        return const SizedBox.shrink();
     }
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 }

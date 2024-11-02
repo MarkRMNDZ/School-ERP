@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:school_erp/features/transition/clean_slide_transition.dart';
 import 'package:school_erp/models/assessment.dart';
-import 'package:school_erp/pages/EnterExitRoute.dart';
 import 'package:school_erp/pages/assignment/assignment_preview/assignment_preview_page.dart';
 import 'package:school_erp/pages/common_widgets/default_button.dart';
 import 'package:school_erp/utils/extensions/string_extension.dart';
@@ -15,12 +15,10 @@ class AssignmentCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
+      onTap: () async {
         Navigator.push(
           context,
-          EnterExitRoute(
-            exitPage: context.widget,
-            enterPage: const AssignmentPreviewPage(),
+          createSlideRoute(const AssignmentPreviewPage(),
           ),
         );
       },
@@ -93,9 +91,7 @@ class AssignmentCard extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    EnterExitRoute(
-                      exitPage: context.widget,
-                      enterPage: const AssignmentPreviewPage(),
+                    createSlideRoute(const AssignmentPreviewPage(),
                     ),
                   );
                 },

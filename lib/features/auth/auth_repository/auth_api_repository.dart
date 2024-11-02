@@ -17,26 +17,33 @@ class AuthRepository {
   String get clientId => dotenv.get('CLIENT_ID');
 
   Future<AuthResult> login(String email, String password) async {
-    final clientToken = await _getClientToken();
-    final uri = Uri.http(baseUrl, "/api/login");
-    final res = await _httpClient.post(
-      uri,
-      headers: {
-        "Accept": "application/json",
-        "Content-Type": "application/json",
-        "Authorization": "Bearer $clientToken",
-      },
-      body: jsonEncode({"email": email, "password": password}),
-    );
 
-    final parsed = jsonDecode(res.body);
-    final String message = parsed['message'] ?? '';
-    final data = parsed['data'];
+    try{
+      final clientToken = await _getClientToken();
+      final uri = Uri.http(baseUrl, "/api/login");
+      final res = await _httpClient.post(
+        uri,
+        headers: {
+          "Accept": "application/json",
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $clientToken",
+        },
+        body: jsonEncode({"email": email, "password": password}),
+      );
 
-    if (res.statusCode != HttpStatus.ok) {
-      return AuthResult.failure(res.statusCode, message);
+      final parsed = jsonDecode(res.body);
+      final String message = parsed['message'] ?? '';
+      final data = parsed['data'];
+
+      if (res.statusCode != HttpStatus.ok) {
+        return AuthResult.failure(res.statusCode, message);
+      }
+      return AuthRequestSuccess.fromJson(data);
+
+    }catch (e){
+      print(e);
+      return AuthResult.failure(500, e.toString());
     }
-    return AuthRequestSuccess.fromJson(data);
   }
 
   Future<bool> logout(String accessToken) async {
@@ -66,6 +73,8 @@ class AuthRepository {
         }));
     final parsed = jsonDecode(res.body);
     final String accessToken = parsed['access_token'];
+    print(accessToken);
+
     return accessToken;
   }
 }

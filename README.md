@@ -17,7 +17,7 @@ Setup Guide:
 
 3. Generate schema / model serialization related boilerplate from freezed:
     ```shell
-    dart run build_runner build --build-filter="**/*.freezed.dart" --build-filter="**/*.g.dart""
+    dart run build_runner build --build-filter="**/*.freezed.dart" --build-filter="**/*.g.dart"
     ```
 
 4. Run the App

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:school_erp/pages/EnterExitRoute.dart';
+import 'package:school_erp/features/transition/clean_slide_transition.dart';
 
 class AppBarAddButton extends StatelessWidget {
   final Widget exitPage;
@@ -13,7 +13,7 @@ class AppBarAddButton extends StatelessWidget {
     return GestureDetector(
       onTap: () => Navigator.push(
         context,
-        EnterExitRoute(exitPage: exitPage, enterPage: enterPage),
+        createSlideRoute(enterPage),
       ),
       child: Container(
         padding: const EdgeInsets.all(8.0),
