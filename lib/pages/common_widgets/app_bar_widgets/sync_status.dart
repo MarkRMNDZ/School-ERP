@@ -67,9 +67,8 @@ class SyncStatusIcon extends StatelessWidget {
       return const IconToolTip('Uploading', Icons.cloud_sync_outlined);
     } else if (status.downloading) {
       return const IconToolTip('Downloading', Icons.cloud_sync_outlined);
-    } else {
-      return const IconToolTip('Connected', Icons.cloud_queue);
     }
+    return Container();
   }
 }
 
